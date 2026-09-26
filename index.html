@@ -11,22 +11,17 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚒️</text></svg>">
 <style>
   :root {
-    --steel: #DDE1E4;      /* page: cold steel */
+    --steel: #DDE1E4;
     --ink: #1A1F24;
     --ink-soft: #4A535C;
-    --straw: #D8B25A;      /* temper colours, low to high heat */
-    --bronze: #B07A3F;
-    --peacock: #2E5A8C;
-    --cold: #B9C0C6;       /* band before it "heats" */
+    --cold: #B9C0C6;
+    --b1: #D8B25A; --b1-ink: #1A1F24;   /* set by the theme picker */
+    --b2: #B07A3F; --b2-ink: #1A1F24;
+    --b3: #2E5A8C; --b3-ink: #F2F4F6;
     --font: "Archivo", "Helvetica Neue", Arial, system-ui, sans-serif;
   }
   @media (prefers-color-scheme: dark) {
-    :root {
-      --steel: #1A1F24;
-      --ink: #E6E9EC;
-      --ink-soft: #A3ACB5;
-      --cold: #2C343C;
-    }
+    :root { --steel: #1A1F24; --ink: #E6E9EC; --ink-soft: #A3ACB5; --cold: #2C343C; }
   }
 
   * { box-sizing: border-box; margin: 0; }
@@ -42,32 +37,43 @@
     flex-direction: column;
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
-
-  .wrap {
-    width: 100%;
-    max-width: 68rem;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-  }
+  .wrap { width: 100%; max-width: 68rem; margin: 0 auto; padding: 0 1.5rem; }
 
   header { padding: clamp(3rem, 10vw, 7rem) 0 clamp(2rem, 5vw, 3.5rem); }
-
   h1 {
     font-weight: 800;
-    font-stretch: 125%;
     font-variation-settings: "wdth" 125;
     font-size: clamp(3rem, 12vw, 8.5rem);
     line-height: 0.9;
     letter-spacing: -0.02em;
   }
-  .lede {
-    margin-top: 1.25rem;
-    max-width: 34rem;
-    font-size: clamp(1.0625rem, 2vw, 1.25rem);
-    color: var(--ink-soft);
-  }
+  .lede { margin-top: 1.25rem; max-width: 34rem; font-size: clamp(1.0625rem, 2vw, 1.25rem); color: var(--ink-soft); }
 
-  /* The memorable thing: projects as a temper-colour bar */
+  /* Theme picker */
+  .picker { margin-top: 1.75rem; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+  .picker label { font-weight: 600; }
+  .swatch { display: inline-flex; height: 1.25rem; width: 3rem; border: 1px solid var(--ink-soft); }
+  .swatch span { flex: 1; transition: background-color 0.5s ease; }
+  .swatch span:nth-child(1) { background: var(--b1); }
+  .swatch span:nth-child(2) { background: var(--b2); }
+  .swatch span:nth-child(3) { background: var(--b3); }
+  select {
+    font: inherit;
+    color: var(--ink);
+    background: transparent;
+    border: 1px solid var(--ink-soft);
+    padding: 0.4rem 2rem 0.4rem 0.6rem;
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+    background-position: calc(100% - 1rem) 55%, calc(100% - 0.65rem) 55%;
+    background-size: 0.35rem 0.35rem;
+    background-repeat: no-repeat;
+    cursor: pointer;
+  }
+  select option, select optgroup { color: #1A1F24; background: #fff; }
+  select:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+
+  /* The bands */
   .bar { list-style: none; padding: 0; display: flex; flex-direction: column; }
   .bar a {
     display: grid;
@@ -84,37 +90,27 @@
   }
   .bar a:hover { padding-left: 2.25rem; }
   .bar a:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
-
-  .name {
-    font-weight: 750;
-    font-variation-settings: "wdth" 112;
-    font-size: clamp(1.5rem, 4vw, 2.5rem);
-    line-height: 1.05;
-  }
+  .name { font-weight: 750; font-variation-settings: "wdth" 112; font-size: clamp(1.5rem, 4vw, 2.5rem); line-height: 1.05; }
   .desc { max-width: 38rem; }
   .path { display: block; margin-top: 0.35rem; font-size: 0.9rem; opacity: 0.8; }
 
-  .straw   { --band: var(--straw);   --band-ink: #1A1F24; }
-  .bronze  { --band: var(--bronze);  --band-ink: #1A1F24; }
-  .peacock { --band: var(--peacock); --band-ink: #F2F4F6; }
+  .band1 { --band: var(--b1); --band-ink: var(--b1-ink); }
+  .band2 { --band: var(--b2); --band-ink: var(--b2-ink); }
+  .band3 { --band: var(--b3); --band-ink: var(--b3-ink); }
 
-  /* One load moment: bands heat from cold steel to temper colour, in order */
+  /* One load moment: bands warm up from cold steel, in order */
   @media (prefers-reduced-motion: no-preference) {
-    .bar a { animation: temper 0.9s ease-out both; }
+    .bar a { animation: temper 0.9s ease-out backwards; }
     .bar li:nth-child(1) a { animation-delay: 0.15s; }
     .bar li:nth-child(2) a { animation-delay: 0.45s; }
     .bar li:nth-child(3) a { animation-delay: 0.75s; }
-    @keyframes temper {
-      from { background-color: var(--cold); color: var(--ink-soft); }
-    }
+    @keyframes temper { from { background-color: var(--cold); color: var(--ink-soft); } }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bar a, .swatch span { transition: none; }
   }
 
-  footer {
-    margin-top: auto;
-    padding: 3rem 0 2rem;
-    font-size: 0.9rem;
-    color: var(--ink-soft);
-  }
+  footer { margin-top: auto; padding: 3rem 0 2rem; font-size: 0.9rem; color: var(--ink-soft); }
   footer p + p { margin-top: 0.4rem; }
   footer a { color: inherit; text-underline-offset: 0.2em; }
 </style>
@@ -124,26 +120,31 @@
     <header>
       <h1>SingForge</h1>
       <p class="lede">Web tools and experiments by Nishith Singhai, built and hosted in the open on GitHub Pages.</p>
+      <div class="picker">
+        <label for="theme">Colours</label>
+        <span class="swatch" aria-hidden="true"><span></span><span></span><span></span></span>
+        <select id="theme"></select>
+      </div>
     </header>
 
     <main>
       <ul class="bar">
         <li>
-          <a class="straw" href="/wheel/">
+          <a class="band1" href="/wheel/">
             <span class="name">The Wheel</span>
             <span class="desc">A 3D radial launcher that opens every SingForge app from one place. Built with React and Three.js.
               <span class="path">/wheel</span></span>
           </a>
         </li>
         <li>
-          <a class="bronze" href="/ubiquitous-guide/">
+          <a class="band2" href="/ubiquitous-guide/">
             <span class="name">Trading toolkit</span>
             <span class="desc">An ADHD-friendly trading companion with a stock wheel and a weekly review. Built with React and Vite.
               <span class="path">/ubiquitous-guide</span></span>
           </a>
         </li>
         <li>
-          <a class="peacock" href="https://github.com/singforgehq">
+          <a class="band3" href="https://github.com/singforgehq">
             <span class="name">Source code</span>
             <span class="desc">Every project here is open source. Browse the repositories on GitHub.
               <span class="path">github.com/singforgehq</span></span>
@@ -155,9 +156,83 @@
 
   <footer>
     <div class="wrap">
-      <p>The bands follow the colours steel turns as it's tempered: straw, bronze, then blue.</p>
+      <p id="theme-note">The bands follow the colours steel turns as it's tempered: straw, bronze, then blue.</p>
       <p>Made by <a href="https://github.com/singhaidotnish">Nishith Singhai</a>.</p>
     </div>
   </footer>
+
+<script>
+  // Three colours per theme, in band order (top to bottom).
+  // To add a flag: copy a line, change the name and the three hex codes.
+  const DEFAULT = { id: "tempered", name: "Tempered steel", colors: ["#D8B25A", "#B07A3F", "#2E5A8C"],
+    note: "The bands follow the colours steel turns as it's tempered: straw, bronze, then blue." };
+
+  const FLAGS = [
+    ["argentina",    "Argentina",    ["#74ACDF", "#FFFFFF", "#74ACDF"]],
+    ["bangladesh",   "Bangladesh",   ["#006A4E", "#F42A41", "#006A4E"]],
+    ["belgium",      "Belgium",      ["#000000", "#FDDA24", "#EF3340"]],
+    ["brazil",       "Brazil",       ["#009C3B", "#FFDF00", "#002776"]],
+    ["canada",       "Canada",       ["#FF0000", "#FFFFFF", "#FF0000"]],
+    ["colombia",     "Colombia",     ["#FCD116", "#003893", "#CE1126"]],
+    ["estonia",      "Estonia",      ["#0072CE", "#000000", "#FFFFFF"]],
+    ["france",       "France",       ["#002654", "#FFFFFF", "#CE1126"]],
+    ["germany",      "Germany",      ["#000000", "#DD0000", "#FFCE00"]],
+    ["india",        "India",        ["#FF9933", "#FFFFFF", "#138808"]],
+    ["ireland",      "Ireland",      ["#169B62", "#FFFFFF", "#FF883E"]],
+    ["italy",        "Italy",        ["#009246", "#FFFFFF", "#CE2B37"]],
+    ["japan",        "Japan",        ["#FFFFFF", "#BC002D", "#FFFFFF"]],
+    ["kenya",        "Kenya",        ["#000000", "#BB0000", "#006600"]],
+    ["mexico",       "Mexico",       ["#006847", "#FFFFFF", "#CE1126"]],
+    ["netherlands",  "Netherlands",  ["#AE1C28", "#FFFFFF", "#21468B"]],
+    ["nigeria",      "Nigeria",      ["#008751", "#FFFFFF", "#008751"]],
+    ["russia",       "Russia",       ["#FFFFFF", "#0039A6", "#D52B1E"]],
+    ["south-africa", "South Africa", ["#007A4D", "#FFB612", "#DE3831"]],
+    ["sweden",       "Sweden",       ["#006AA7", "#FECC00", "#006AA7"]],
+    ["ukraine",      "Ukraine",      ["#0057B7", "#FFD700", "#0057B7"]],
+    ["uk",           "United Kingdom", ["#012169", "#FFFFFF", "#C8102E"]],
+    ["usa",          "United States",  ["#B22234", "#FFFFFF", "#3C3B6E"]],
+  ].map(([id, name, colors]) => ({ id, name, colors, note: `Colours from the flag of ${name}.` }));
+
+  const THEMES = [DEFAULT, ...FLAGS];
+  const KEY = "singforge-theme";
+  const root = document.documentElement;
+  const select = document.getElementById("theme");
+  const note = document.getElementById("theme-note");
+
+  // Dark text on light colours, light text on dark colours.
+  function inkFor(hex) {
+    const c = hex.slice(1).match(/../g).map(h => {
+      const v = parseInt(h, 16) / 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    const lum = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+    return lum > 0.18 ? "#1A1F24" : "#F2F4F6";
+  }
+
+  function apply(id) {
+    const t = THEMES.find(x => x.id === id) || DEFAULT;
+    t.colors.forEach((hex, i) => {
+      root.style.setProperty(`--b${i + 1}`, hex);
+      root.style.setProperty(`--b${i + 1}-ink`, inkFor(hex));
+    });
+    note.textContent = t.note;
+    select.value = t.id;
+    try { localStorage.setItem(KEY, t.id); } catch (e) {}
+  }
+
+  // Build the list
+  const g1 = document.createElement("optgroup"); g1.label = "SingForge";
+  g1.append(new Option(DEFAULT.name, DEFAULT.id));
+  const g2 = document.createElement("optgroup"); g2.label = "Flags";
+  FLAGS.forEach(f => g2.append(new Option(f.name, f.id)));
+  select.append(g1, g2);
+
+  select.addEventListener("change", e => apply(e.target.value));
+
+  // Start with ?theme=india if given, else the saved choice, else the default
+  let start = new URLSearchParams(location.search).get("theme");
+  if (!start) { try { start = localStorage.getItem(KEY); } catch (e) {} }
+  apply(start || DEFAULT.id);
+</script>
 </body>
 </html>
