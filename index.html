@@ -1,3 +1,163 @@
-   <!DOCTYPE html>
-   <meta http-equiv="refresh" content="0; url=/wheel/">
-   <link rel="canonical" href="/wheel/">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SingForge — web tools by Nishith Singhai</title>
+<meta name="description" content="SingForge is Nishith Singhai's hub for open-source web tools and experiments: a 3D app launcher, a trading toolkit, and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚒️</text></svg>">
+<style>
+  :root {
+    --steel: #DDE1E4;      /* page: cold steel */
+    --ink: #1A1F24;
+    --ink-soft: #4A535C;
+    --straw: #D8B25A;      /* temper colours, low to high heat */
+    --bronze: #B07A3F;
+    --peacock: #2E5A8C;
+    --cold: #B9C0C6;       /* band before it "heats" */
+    --font: "Archivo", "Helvetica Neue", Arial, system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --steel: #1A1F24;
+      --ink: #E6E9EC;
+      --ink-soft: #A3ACB5;
+      --cold: #2C343C;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--steel);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 68rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  header { padding: clamp(3rem, 10vw, 7rem) 0 clamp(2rem, 5vw, 3.5rem); }
+
+  h1 {
+    font-weight: 800;
+    font-stretch: 125%;
+    font-variation-settings: "wdth" 125;
+    font-size: clamp(3rem, 12vw, 8.5rem);
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+  }
+  .lede {
+    margin-top: 1.25rem;
+    max-width: 34rem;
+    font-size: clamp(1.0625rem, 2vw, 1.25rem);
+    color: var(--ink-soft);
+  }
+
+  /* The memorable thing: projects as a temper-colour bar */
+  .bar { list-style: none; padding: 0; display: flex; flex-direction: column; }
+  .bar a {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+    padding: clamp(1.25rem, 3vw, 2rem) 1.5rem;
+    text-decoration: none;
+    color: var(--band-ink);
+    background: var(--band);
+    transition: background-color 0.5s ease, color 0.5s ease, padding-left 0.2s ease;
+  }
+  @media (min-width: 44rem) {
+    .bar a { grid-template-columns: minmax(14rem, 1fr) 2fr; align-items: baseline; gap: 2rem; }
+  }
+  .bar a:hover { padding-left: 2.25rem; }
+  .bar a:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+
+  .name {
+    font-weight: 750;
+    font-variation-settings: "wdth" 112;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    line-height: 1.05;
+  }
+  .desc { max-width: 38rem; }
+  .path { display: block; margin-top: 0.35rem; font-size: 0.9rem; opacity: 0.8; }
+
+  .straw   { --band: var(--straw);   --band-ink: #1A1F24; }
+  .bronze  { --band: var(--bronze);  --band-ink: #1A1F24; }
+  .peacock { --band: var(--peacock); --band-ink: #F2F4F6; }
+
+  /* One load moment: bands heat from cold steel to temper colour, in order */
+  @media (prefers-reduced-motion: no-preference) {
+    .bar a { animation: temper 0.9s ease-out both; }
+    .bar li:nth-child(1) a { animation-delay: 0.15s; }
+    .bar li:nth-child(2) a { animation-delay: 0.45s; }
+    .bar li:nth-child(3) a { animation-delay: 0.75s; }
+    @keyframes temper {
+      from { background-color: var(--cold); color: var(--ink-soft); }
+    }
+  }
+
+  footer {
+    margin-top: auto;
+    padding: 3rem 0 2rem;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+  footer p + p { margin-top: 0.4rem; }
+  footer a { color: inherit; text-underline-offset: 0.2em; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>SingForge</h1>
+      <p class="lede">Web tools and experiments by Nishith Singhai, built and hosted in the open on GitHub Pages.</p>
+    </header>
+
+    <main>
+      <ul class="bar">
+        <li>
+          <a class="straw" href="/wheel/">
+            <span class="name">The Wheel</span>
+            <span class="desc">A 3D radial launcher that opens every SingForge app from one place. Built with React and Three.js.
+              <span class="path">/wheel</span></span>
+          </a>
+        </li>
+        <li>
+          <a class="bronze" href="/ubiquitous-guide/">
+            <span class="name">Trading toolkit</span>
+            <span class="desc">An ADHD-friendly trading companion with a stock wheel and a weekly review. Built with React and Vite.
+              <span class="path">/ubiquitous-guide</span></span>
+          </a>
+        </li>
+        <li>
+          <a class="peacock" href="https://github.com/singforgehq">
+            <span class="name">Source code</span>
+            <span class="desc">Every project here is open source. Browse the repositories on GitHub.
+              <span class="path">github.com/singforgehq</span></span>
+          </a>
+        </li>
+      </ul>
+    </main>
+  </div>
+
+  <footer>
+    <div class="wrap">
+      <p>The bands follow the colours steel turns as it's tempered: straw, bronze, then blue.</p>
+      <p>Made by <a href="https://github.com/singhaidotnish">Nishith Singhai</a>.</p>
+    </div>
+  </footer>
+</body>
+</html>
